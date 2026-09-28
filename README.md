@@ -34,11 +34,8 @@ Built with a strict focus on backend systems architecture rather than frontend U
 
 • **Real-Time Telemetry Cache:** Utilizes Redis to rapidly process, store, and retrieve live driver GPS coordinates, protecting the primary relational database from heavy disk I/O and lock contention.
 
-<<<<<<< HEAD
 • Event-Driven Webhooks: A system that allows third-party services to subscribe to order status updates (e.g., PICKED_UP, DELIVERED) and receive asynchronous, HMAC-signed HTTP payloads (`x-webhook-signature` header).
-=======
 • **Automated Simulation Worker:** A decoupled background Node.js process that continuously streams mutating geographical coordinates to the API, mocking a live vehicle's tracking hardware.
->>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
 • **RESTful Order Management:** Clean, modularized API endpoints to provision deliveries and assign unique tracking references.
 
@@ -81,15 +78,9 @@ Built with a strict focus on backend systems architecture rather than frontend U
 ### **5. Initialize Database Schema (One-time):**
 
         Bash
-<<<<<<< HEAD
         npm run db:init
         
 6. Start the Development Server:
-=======
-        node src/db/init.js
-
-### **6. Start the API Server (Tab 2):**
->>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
         Bash
         npm run dev
@@ -106,7 +97,6 @@ Built with a strict focus on backend systems architecture rather than frontend U
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | POST | /api/v1/orders | Create a new dispatch order |
-<<<<<<< HEAD
 | PATCH | /api/v1/orders/:id/status | Update order status (`CREATED`, `ASSIGNED`, `PICKED_UP`, `IN_TRANSIT`, `DELIVERED`, `CANCELLED`) and fire webhooks |
 
 Fleet
@@ -127,15 +117,9 @@ System
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | GET | /health | Check API, PostgreSQL and Redis status (503 if a dependency is down) |
-=======
-| PATCH | /api/v1/orders/:id/status | Update status (triggers webhook dispatcher) |
->>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
 ### **Fleet Telemetry**
 
-<<<<<<< HEAD
-• Move webhook delivery to a background job queue with retries.
-=======
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | POST | /api/v1/fleet/:driver_id/location | Write driver GPS coordinates to Redis cache |
@@ -146,7 +130,6 @@ System
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | POST | /api/v1/webhooks | Register an external URL to receive signed event payloads |
->>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
 ## **👨‍💻 Author**
 
