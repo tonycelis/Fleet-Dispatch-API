@@ -1,10 +1,10 @@
-Real-Time Fleet & Dispatch Tracking API
+# **Fleet Dispatch & Telemetry API**
 
-A backend service built to handle the logistical complexities of last-mile delivery, dispatching, and real-time fleet tracking. Inspired by hands-on experience in the grocery delivery and transport sector, this project abstracts the physical challenges of route management into an event-driven architectural system.
+An event-driven backend architecture designed to handle the logistical complexities of last-mile delivery, dispatching, and real-time fleet tracking.
 
-It provides endpoints for creating orders, simulating driver coordinates using Redis pub/sub, and asynchronously dispatching webhook events to external clients when delivery statuses change.
+Built with a strict focus on backend systems architecture rather than frontend UI, this project abstracts the physical challenges of route management—inspired by real-world grocery delivery logistics—into a highly concurrent, containerized API. It leverages a multi-database approach, using relational storage for persistent state and an in-memory cache for high-frequency ephemeral data.
 
-🏗️ Architecture
+## **🏗️ Architecture**
     
     graph TD
     Client[Client / Dispatcher] -->|POST /orders| API(Node.js / Express API)
@@ -16,81 +16,97 @@ It provides endpoints for creating orders, simulating driver coordinates using R
     Worker -->|Status Change| Webhook[Webhook Dispatcher]
     Webhook -->|POST| External[External Client URL]
 
-🛠️ Tech Stack
+## **🛠️ Tech Stack**
 
-• Runtime: Node.js, Express.js
+• **Runtime:** Node.js, Express.js
 
-• Database: PostgreSQL (Persistent state, Orders, Webhook Subscriptions)
+• **Persistent Storage:** PostgreSQL (Order states, Webhook subscriptions, Routing data)
 
-• Cache & Pub/Sub: Redis (Ephemeral driver coordinates, real-time messaging)
+• **High-Frequency Cache:** Redis (Real-time driver GPS coordinates)
 
-• Infrastructure: Docker & Docker Compose
+• **Infrastructure:** Docker & Docker Compose
 
-• Architecture: RESTful API, Event-Driven Webhooks
+• **Security:** Cryptographic HMAC SHA-256 payload signing
 
-✨ Key Features
+## **✨ Core Features**
 
-• Order Management: REST endpoints to provision dispatch orders and assign unique tracking IDs.
+• **Event-Driven Webhooks:** A robust subscription system that securely dispatches asynchronous HTTP payloads to third-party services when order statuses update (e.g., **CREATED** to **DELIVERED**).
 
-• Real-Time Telemetry Cache: Utilizes Redis to rapidly store and retrieve simulated driver GPS coordinates without overloading the primary relational database.
+• **Real-Time Telemetry Cache:** Utilizes Redis to rapidly process, store, and retrieve live driver GPS coordinates, protecting the primary relational database from heavy disk I/O and lock contention.
 
+<<<<<<< HEAD
 • Event-Driven Webhooks: A system that allows third-party services to subscribe to order status updates (e.g., PICKED_UP, DELIVERED) and receive asynchronous, HMAC-signed HTTP payloads (`x-webhook-signature` header).
+=======
+• **Automated Simulation Worker:** A decoupled background Node.js process that continuously streams mutating geographical coordinates to the API, mocking a live vehicle's tracking hardware.
+>>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
-• Containerized Infrastructure: One-command local environment spin-up using Docker Compose for the data layer.
+• **RESTful Order Management:** Clean, modularized API endpoints to provision deliveries and assign unique tracking references.
 
-🚀 Getting Started
+## **🚀 Getting Started**
 
-Prerequisites
+### **Prerequisites**
 
 • Node.js (v18+ recommended)
 
-• Docker Desktop (running)
+• Docker Desktop
 
 • Git
 
-Installation
+## **Installation & Boot Sequence**
 
-1. Clone the repository:
+### **1. Clone the repository:**
 
         Bash
         git clone https://github.com/your-username/fleet-dispatch-api.git
         cd fleet-dispatch-api
 
-2. Install dependencies:
+### **2. Install dependencies:**
 
         Bash
         npm install
     
-3. Configure Environment Variables:
+### **3. Configure Environment Variables:**
 
-    Create a .env file in the root directory:
+   Create a .env file in the root directory:
 
         PORT=3000
         DATABASE_URL=postgres://postgres:password@localhost:5432/fleet_db
         REDIS_URL=redis://localhost:6379
     
-4. Start the Database and Cache:
+### **4. Spin up the Infrastructure (Tab 1):**
 
         Bash
         docker compose up -d
     
-5. Initialize the Database Schema:
+### **5. Initialize Database Schema (One-time):**
 
         Bash
+<<<<<<< HEAD
         npm run db:init
         
 6. Start the Development Server:
+=======
+        node src/db/init.js
+
+### **6. Start the API Server (Tab 2):**
+>>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
         Bash
         npm run dev
+            
+### **7. Start the Development Server:**
 
-📡 API Endpoints (v1)
+        Bash
+        npm run simulate
 
-Orders
+## **📡 API Endpoints (v1)**
+
+### **Orders & Dispatch**
 
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | POST | /api/v1/orders | Create a new dispatch order |
+<<<<<<< HEAD
 | PATCH | /api/v1/orders/:id/status | Update order status (`CREATED`, `ASSIGNED`, `PICKED_UP`, `IN_TRANSIT`, `DELIVERED`, `CANCELLED`) and fire webhooks |
 
 Fleet
@@ -111,11 +127,31 @@ System
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | GET | /health | Check API, PostgreSQL and Redis status (503 if a dependency is down) |
+=======
+| PATCH | /api/v1/orders/:id/status | Update status (triggers webhook dispatcher) |
+>>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
 
-🛣️ Roadmap & Future Enhancements
+### **Fleet Telemetry**
 
+<<<<<<< HEAD
 • Move webhook delivery to a background job queue with retries.
+=======
+| Method | Endpoint | Description |
+| -------- | -------- | -------- |
+| POST | /api/v1/fleet/:driver_id/location | Write driver GPS coordinates to Redis cache |
+| GET | /api/v1/fleet/:driver_id/location | Read real-time driver coordinates |
 
-• Implement integration tests using Jest and Supertest.
+### **Webhook Management**
 
-Developed with a focus on backend systems architecture and resilient API design.
+| Method | Endpoint | Description |
+| -------- | -------- | -------- |
+| POST | /api/v1/webhooks | Register an external URL to receive signed event payloads |
+>>>>>>> 93a8ce97fcceca559350ee126a4a28d33cf37a08
+
+## **👨‍💻 Author**
+
+**Antonio Ranon Celis**
+
+Software Engineering (B.Eng. Co-op)
+
+Concordia University
