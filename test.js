@@ -1,9 +1,10 @@
+require('dotenv').config();
 const { Client } = require('pg');
 
 console.log("1. Script started");
 
 const client = new Client({
-  connectionString: 'postgres://postgres:password@localhost:5432/fleet_db',
+  connectionString: process.env.DATABASE_URL || 'postgres://postgres:password@localhost:5432/fleet_db',
   connectionTimeoutMillis: 3000
 });
 

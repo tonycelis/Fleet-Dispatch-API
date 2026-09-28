@@ -1,14 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database');
 const crypto = require('crypto');
+const { pool } = require('../config/database');
+
+const isHttpUrl = (value) => {
+  try {
+    const { protocol } = new URL(value);
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 // POST /api/v1/webhooks - Register a new webhook listener
 router.post('/', async (req, res) => {
-  const { url } = req.body;
-  
-  if (!url) {
-    return res.status(400).json({ error: 'Webhook URL is required' });
+  const { url } = req.body ?? {};
+
+  if (typeof url !== 'string' || !isHttpUrl(url)) {
+    return res.status(400).json({ error: 'A valid http(s) webhook URL is required' });
   }
 
   // Generate a secure signing secret for this specific client
@@ -19,10 +28,10 @@ router.post('/', async (req, res) => {
       `INSERT INTO webhooks (url, secret) VALUES ($1, $2) RETURNING id, url, secret, is_active`,
       [url, secret]
     );
-    
-    res.status(201).json({ 
-      message: 'Webhook registered successfully', 
-      webhook: result.rows[0] 
+
+    res.status(201).json({
+      message: 'Webhook registered successfully',
+      webhook: result.rows[0],
     });
   } catch (error) {
     console.error('Error registering webhook:', error);

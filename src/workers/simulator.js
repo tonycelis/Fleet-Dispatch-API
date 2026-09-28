@@ -1,6 +1,8 @@
 // A simple worker that simulates a driver moving through downtown Montreal
-const DRIVER_ID = 'driver-123';
-const API_URL = `http://localhost:3000/api/v1/fleet/${DRIVER_ID}/location`;
+const DRIVER_ID = process.env.DRIVER_ID || 'driver-123';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+const API_URL = `${API_BASE_URL}/api/v1/fleet/${DRIVER_ID}/location`;
+const INTERVAL_MS = 3000;
 
 // Starting coordinates
 let currentLat = 45.5017;
@@ -21,7 +23,7 @@ const moveDriver = async () => {
     if (response.ok) {
       console.log(`📍 [${new Date().toLocaleTimeString()}] Driver moved to: ${currentLat.toFixed(5)}, ${currentLng.toFixed(5)}`);
     } else {
-      console.error('Failed to update location - API returned an error.');
+      console.error(`Failed to update location - API returned ${response.status}`);
     }
   } catch (error) {
     console.error('API connection error. Is the server running?', error.message);
@@ -32,4 +34,4 @@ console.log(`🚗 Starting simulation for ${DRIVER_ID}...`);
 console.log('Press Ctrl + C to stop the engine.');
 
 // Ping the API every 3 seconds
-setInterval(moveDriver, 3000);
+setInterval(moveDriver, INTERVAL_MS);

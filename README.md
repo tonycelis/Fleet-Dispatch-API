@@ -34,7 +34,7 @@ It provides endpoints for creating orders, simulating driver coordinates using R
 
 • Real-Time Telemetry Cache: Utilizes Redis to rapidly store and retrieve simulated driver GPS coordinates without overloading the primary relational database.
 
-• Event-Driven Webhooks (WIP): A system that allows third-party services to subscribe to order status updates (e.g., PICKED_UP, DELIVERED) and receive asynchronous HTTP payloads.
+• Event-Driven Webhooks: A system that allows third-party services to subscribe to order status updates (e.g., PICKED_UP, DELIVERED) and receive asynchronous, HMAC-signed HTTP payloads (`x-webhook-signature` header).
 
 • Containerized Infrastructure: One-command local environment spin-up using Docker Compose for the data layer.
 
@@ -77,7 +77,7 @@ Installation
 5. Initialize the Database Schema:
 
         Bash
-        node src/db/init.js
+        npm run db:init
         
 6. Start the Development Server:
 
@@ -91,15 +91,30 @@ Orders
 | Method | Endpoint | Description |
 | -------- | -------- | -------- |
 | POST | /api/v1/orders | Create a new dispatch order |
-| GET | /health | Check API and Database status |
+| PATCH | /api/v1/orders/:id/status | Update order status (`CREATED`, `ASSIGNED`, `PICKED_UP`, `IN_TRANSIT`, `DELIVERED`, `CANCELLED`) and fire webhooks |
+
+Fleet
+
+| Method | Endpoint | Description |
+| -------- | -------- | -------- |
+| POST | /api/v1/fleet/:driver_id/location | Update driver coordinates (`lat`, `lng`); expires after 5 minutes |
+| GET | /api/v1/fleet/:driver_id/location | Get latest driver coordinates |
+
+Webhooks
+
+| Method | Endpoint | Description |
+| -------- | -------- | -------- |
+| POST | /api/v1/webhooks | Register a webhook URL; returns its HMAC signing secret |
+
+System
+
+| Method | Endpoint | Description |
+| -------- | -------- | -------- |
+| GET | /health | Check API, PostgreSQL and Redis status (503 if a dependency is down) |
 
 🛣️ Roadmap & Future Enhancements
 
-• Implement the Redis driver simulation worker.
-
-• Build the webhook dispatcher using background jobs.
-
-• Add HMAC payload signing for secure webhook transmission.
+• Move webhook delivery to a background job queue with retries.
 
 • Implement integration tests using Jest and Supertest.
 
